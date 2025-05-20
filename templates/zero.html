@@ -1,0 +1,1057 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GameNet Management</title>
+        
+        <!-- CSS ها -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link href="{% static 'css/select2.min.css' %}" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+
+        <!-- JS ها -->
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        <script src="{% static 'js/select2.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+
+    <style>
+        :root {
+            --color-background:rgba(0, 1, 25, 0);
+            --stroke-width: calc(1em / 16);
+            --font-size: 5vmin;
+            --font-weight: 600;
+            --letter-spacing: calc(1em / 8);
+          }
+          
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: linear-gradient(100deg, #253544, #204f7e);
+            font-family: Arial, sans-serif;
+            color: #ecf0f1;
+            padding: 20px;
+        }
+
+        .main-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .top-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 50px;
+            flex: 1;
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            width: auto;
+            text-align: center;
+            height:800px;
+            margin-top:70px;
+            /*overflow:scroll;*/    
+        }
+        .fullbox{
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            width: 100%;
+        }
+        .float{
+            transform: translateX(0);
+            position: absolute;
+            right:0;
+            top:0;
+            text-align: center;
+            width: 100%;
+            display:flex;
+            gap:20px;
+            height:10%;
+        }
+        .bottom-section {
+            flex: 0.5;
+            background: rgba(52, 152, 219, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .available {
+            background: rgba(46, 204, 112, 0.17);
+            border: 1px solid #2ecc71;
+        }
+
+        .active {
+            background: rgba(233, 217, 215, 0.17);
+            border: 1.5px solid #e74c3c;
+         }
+         .add{
+            background: rgba(253, 251, 251, 0.8);
+            border: 2px solid rgb(173, 184, 30);
+            color:black;
+         }
+        .team-list {
+            display:flex;
+            flex: 1 1 calc(80% - 10px);
+            flex-wrap: wrap;
+            gap:20px;
+            width:100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin:auto;
+            list-style-type: none;
+            flex-direction:column;
+            margin-top:10px;
+        }
+        .team-list li { 
+            position:relative;
+            color:black;
+            background-color: #fff;
+            padding: 15px;
+            width:100%;
+            text-align:left;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /*margin-bottom: 15px;
+            margin:10px;*/
+        }
+        .team-list h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        .team-list p {
+            margin: 5px 0;
+            padding:10px;
+        }
+        .team-list .uuid {
+            font-size: 0.9em;
+            color: #777;
+        }
+        /* sadasdadasdasdasd */
+      /* Style for the entire list */
+
+.team-list-stats {
+    display: flex;
+    flex-direction:column;
+    gap: 15px; /* Spacing between items */
+    max-height: 600px; /* You can set this to the height you want */
+    overflow-y: auto; /* Vertical scrolling */
+    padding: 0;
+    list-style-type: none; /* Remove default list styling */
+    height: 100%; /* Full height of the container */
+    padding:20px
+  }
+  .team-list-stats.box{
+    margin-top:10px;
+    overflow:scroll;
+  }
+  /* Each team item styling */
+  .team-item {
+    margin: 0;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: box-shadow 0.3s ease;
+    height:65px;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    width:100%;
+  }
+  
+  /* Hover effect for team item */
+  .team-item:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+  }
+  
+  /* Styling for team content */
+  .team {
+    display: flex;
+    flex-direction: column;
+    color: #333;
+    width:100%
+
+  }
+  
+  .team-id {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #3498db;
+    margin-bottom: 5px;
+    margin:auto
+  }
+  
+  .team-name {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #2c3e50;
+    margin:auto;
+    margin-bottom: 5px;
+
+}
+  
+  .team-position {
+    width:30%;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #7f8c8d;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .team-list {
+      max-height: 300px; /* Adjust max height on smaller screens */
+    }
+  
+    /*.team-id, .team-name, .team-position {
+      font-size: 1rem;
+      width:40%;
+    }*/
+  }
+  
+        /* Styles for the add button */
+        #bottone1 {
+            padding-left: 33px;
+            padding-right: 33px;
+            padding-bottom: 16px;   
+            padding-top: 16px;
+            border-radius: 9px;
+            background: #d5f365;
+            border: none;
+            font-family: inherit;
+            margin-top: 50px;
+            margin-left: 75%;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.4s;
+
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding:auto;
+            justify-content:center;
+        }
+        
+        #bottone1:hover {
+            box-shadow: 7px 5px 56px -14px #C3D900;
+        }
+
+        #bottone1:active {
+            transform: scale(0.97);
+            box-shadow: 7px 5px 56px -10px #C3D900;
+        }
+
+        /* Styles for the ID form */
+        #idForm {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            text-align: center;
+        }
+
+        #idForm input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        #idForm button {
+            margin: 10px 5px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .confirm-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .modal-dialog{
+            color:black
+        }
+        .select2-results__option .select2-results__option--selectable{
+            color:black;
+        }
+        .select2-container--default .select2-results > .select2-results__options {
+            color:black;
+        }
+        .modal-body label{
+            margin-right:10px;
+            width:135px;
+            text-align:center;
+        }
+        .info-button {
+            margin-left: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+          }
+          .info-tooltip {
+            /*display: none;*/
+            height:10px;
+            position: absolute;
+            right: 0;
+            top:-20px;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 1px;   
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 0;
+            width:200px;
+            text-align:center;
+          }
+          .info-button:hover + .info-tooltip {
+            display: block;
+          }
+          .team {
+            display: flex;
+            flex-direction:row;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative;
+            text-align:center;
+            justify-content: space-between;
+          }
+          .btn-container{
+            display:flex;
+            gap:3px;  
+          }
+          body {
+            background-color: var(--color-background);
+            display: grid;
+            font-family: Poppins, sans-serif;
+            margin: 0;
+            min-block-size: 100vh;
+            place-items: center;
+            padding: 5vmin;
+          }
+          
+          h1 {
+            background-clip: text;
+            background-image: linear-gradient(to right, #09f1b8, #00a2ff, #ff00d2, #fed90f);
+            color: var(--color-background);
+            font-size: var(--font-size);
+            font-weight: var(--font-weight);
+            letter-spacing: var(--letter-spacing);
+            padding: calc(--stroke-width / 2);
+            -webkit-text-stroke-color: transparent;
+            -webkit-text-stroke-width: var(--stroke-width);
+          }
+          .text-gradient {
+            color: #7319fa;
+            background-image: -webkit-linear-gradient(45deg, #7319fa, #ff33b4, #ff7e29);
+            background-clip: text;
+            -webkit-background-clip: text;
+            text-fill-color: transparent;
+          }
+          .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin:0;
+            color:black;
+            width:110px;
+        }
+        .btn.checkout{
+            border:solid black 1px;
+        }
+        .btn.checkout:hover{
+            color:rgb(58, 163, 58);
+            border:solid black 1px;
+            -webkit-background-clip: text;
+            background-clip: text;   
+            background-image: -webkit-linear-gradient(45deg, #7319fa, #ff33b4, #c9bfb9);
+            text-fill-color: transparent;
+
+        }
+        .btn.pay{
+            color:black;
+            border:solid black 1px        
+        }
+        .btn.pay:hover{
+            color:red;
+            border:solid black 1px;
+            -webkit-background-clip: text;
+            background-clip: text;   
+            background-image: -webkit-linear-gradient(45deg, #7319fa, #ff33b4, #c9bfb9);
+
+        }
+        .btn.timer-pause {
+            background-color: #ff9800;
+            font-color : white !important;
+        }
+        .btn.timer-end {
+            background-color:rgba(244, 67, 54, 0);
+            color: white;
+        }
+        .btn.add-team {
+            width:30%;
+            background-color: #1976d2;
+            color: white;
+        }
+        .information-container{
+            justify-content:center;
+            margin: auto;
+            display:flex;
+            justify-content: space-evenly;
+            gap: 10px;
+            width:250px;
+            position: relative;
+
+          }
+        .toman-label {
+            display: flex;
+            font-size: 1rem;
+            width: 50%;
+            position: relative;
+        }
+        .duration{
+            width: 50%;
+        }
+        .amount{
+            display: flex;
+            width: 100%;
+            position: relative;
+            flex-direction: row;
+        }
+        .toman-icon{
+            position: absolute;
+            width:50px;
+            font-size: 1rem;  
+            top: 4px;
+            padding-left: 30px;
+            right: 36px;
+        }
+        .container {
+            margin: auto;
+       ;border-radius:10px     width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+        }
+        .status-card {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: auto;
+            display: inline-block;
+            height: 200px;
+            width: 50%;
+            margin-top: 50px;
+        }
+        .member-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .dropbtn {
+            background-color: #4a4a4a;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2b2b2b;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+            padding: 8px 0;
+        }
+        
+        .member-item {
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #404040;
+        }
+        
+        .member-item small {
+            display: block;
+            color: #888;
+            font-size: 0.8em;
+        }
+        
+        .member-item:last-child {
+            border-bottom: none;
+        }
+        
+        .member-dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .member-dropdown:hover .dropbtn {
+            background-color: #5a5a5a;
+        }
+
+.row-dropdown {
+    display: flex !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateX(10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    position: absolute;
+    left: 100% !important;
+    top: 0 !important;
+  }
+  
+  .dropright.show .row-dropdown {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .dropdown-item {
+    white-space: nowrap;
+    border-right: 1px solid #eee;
+    transition: all 0.2s;
+  }
+  
+  .dropdown-item:hover {
+    background: #f8f9fa;
+    transform: scale(1.05);
+  }
+  
+  .dropdown-toggle::after {
+    margin-left: 12px;
+  }
+  
+</style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="top-section">
+            <div class="box" id="teamManagement">
+                    
+                <div>
+                    <h1>Team Management <a data-toggle="modal" data-target="#teamMembersModal" href="/addTeam">+</a></h1>
+                    {% comment %} <button type="submit" class="add" href="/addTeam">+</button> {% endcomment %}
+                </div>
+
+                <p>Manage teams, add players, and organize matches.</p>
+                {% comment %} <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#teamMembersModal">Add Teams</button> {% endcomment %}
+                <ul class="team-list">
+                    <!-- Team 1 -->
+                    {% for teamItterate in context.team  %}
+                        {% if teamItterate.checkedout == False and teamItterate.teamMembers.all.count != 0 %}
+                            <li>   
+                                <div class="team text-gradient">            
+                                    <div style="display:flex;">
+                                        {% comment %} {% for member in teamItterate.teamMembers.all %}
+                                        [ 
+                                            <strong>{{member.id|join:", "}} </strong>
+                                            {% endfor %} 
+                                            ] {% endcomment %}
+                                            <div class="member-dropdown">
+                                            {{ teamItterate.systemType }}
+                                            <button class="dropbtn">Members ({{ teamItterate.teamMembers.count }}) ▼</button>
+                                            <div class="dropdown-content">
+                                                {% for member in teamItterate.teamMembers.all %}
+                                                    <div class="member-item">
+                                                        <a href="{% url 'manager:remove_member' teamItterate.id member.id %}" 
+                                                        class="remove-btn"
+                                                        onclick="return confirm('Are you sure?')">
+                                                         🗑️
+                                                         <span>{{ member.uuid }} {{ member.name }}</span></a>
+                                                         {% if member.email %}
+                                                             <small>{{ member.email }}</small>
+                                                         {% endif %}
+                                                     </a>
+                                                    </div>
+                                                {% empty %}
+                                                    <div class="member-item">No members in this team</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {% comment %} {{ teamItterate.startTime |date:'H : i' }} {% endcomment %}
+                                            <p><span id="startteam {{ teamItterate }}">{{ teamItterate.startTime |date:'H : i' }}</span></p>
+                                        </div>
+                                    </div>                    
+                                    <div class="information-container">
+                                        <div class="duration" style="margin-left:10px;margin-right:2px">
+                                            <div id="duration {{teamItterate}}">
+                                                {% comment %} {{ teamItterate.duration }} {% endcomment %}
+                                                {% if teamItterate.getDurationMin is not NONE %}
+                                                    {{ teamItterate.getDurationMin }}
+                                                {% endif %}
+                                            </div>    
+                                            <sub> Min</sub>
+                                        </div>
+                                        <div style="margin-left:6px;margin-right:2px">
+                                            <div id="checkout {{teamItterate}}">
+                                                {{ teamItterate.checkout}}
+                                            </div>
+                                            <sub>Toman</sub>
+                                        </div>
+                                    </div>
+                                    <div class="btn-container">
+                                        <button class="btn checkout" onclick="endTimer({{ teamItterate }})">Checkout</button>
+                                        <button class="btn pay" onclick="pay({{ teamItterate }})"><a style="color:black;text-decoration: none;" href="{% url 'manager:payTeam' teamItterate.id%}">PAY</a></button> 
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                </ul> 
+                <div class="modal fade" id="teamMembersModal" tabindex="-1" role="dialog" aria-labelledby="teamMembersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Create New Team</h5>
+                                <button type="button" class="close text-white" data-dismiss="modal">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'manager:addTeam' %}">
+                                    {% csrf_token %}         
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">System Type</label>
+                                        <select name="systemType" class="form-control custom-select">
+                                            {% for value, text in form.systemType.field.choices %}
+                                                <option value="{{ value }}">{{ text }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                
+                                    <select name="teamMembers" class="form-control select2-multi" multiple="multiple" style="width: 100%;">
+                                        {% for user in users %}  {# Changed from context.users to users #}
+                                            <option value="{{ user.id }}">
+                                                {{ user }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <div class="modal-footer" style="display:flex;gap:5px">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" style="width:120px" class="btn btn-success">Create Team</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                .select2-container--default .select2-selection--multiple {
+                    border: 1px solid #ced4da !important;
+                    min-height: 38px !important;
+                    border-radius: 4px !important;
+                }
+                .select2-selection__choice{
+                    color:red;
+                    width:100%;
+                  }
+                .modal-content {
+                    border-radius: 8px;
+                    border: none;
+                }
+                
+                .custom-select, .select2-multi {
+                    height: calc(1.5em + 1rem + 2px);
+                    padding: 0.375rem 0.75rem;
+                    border: 1px solid #ced4da;
+                    transition: border-color 0.15s;
+                }
+                </style>
+                <div style="width: 100%;" class="modal fade" id="teamMembersModal" tabindex="-1" role="dialog" aria-labelledby="teamMembersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="color:black;height:500px">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="teamMembersModalLabel">Select Team Members</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="color:black;display:flex;gap:15px;margin-left:0">
+                                <form method="POST" action="{% url 'manager:addTeam' %}"  style="display:flex;gap:5px;flex-direction:column;margin:auto 0;width:100%;">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}  
+                                    <button type="submit" class="btn btn-primary" style="margin:auto">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="modal fade" id="UsersModal" tabindex="-1" role="dialog" aria-labelledby="UsersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-md" role="document">
+                        <div class="modal-content" style="border-radius: 8px; border: none;">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="UsersModalLabel">Select User Members</h5>
+                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="padding: 20px;">
+                                <form method="POST" action="{% url 'manager:addUser' %}" style="display: flex; flex-direction: column; gap: 15px;">
+                                    {% csrf_token %}
+                                    {{ secondForm.as_p}}
+                                    <div class="modal-footer" style="padding: 0; margin-top: 10px; display: flex; justify-content: flex-end; gap: 10px;">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button style="width:130px" type="submit" class="btn btn-success">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    .modal-content {
+                        border-radius: 8px;
+                        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+                    }
+                    
+                    .modal-header {
+                        border-bottom: 1px solid #dee2e6;
+                    }
+                    
+                    .modal-footer {
+                        border-top: none;
+                    }
+                    
+                    form .form-control {
+                        border-radius: 4px;
+                        border: 1px solid #ced4da;
+                        transition: border-color 0.2s;
+                    }
+                                    
+                </style>
+                {% comment %} <div class="modal fade" id="UsersModal" tabindex="-1" role="dialog" aria-labelledby="UsersModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="color:black;height:550px">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="UsersModalLabel">Select USER Members</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body" style="color:black;display:flex;gap:15px">
+                            <form method="POST" action="{% url 'manager:addUser' %}"  style="display:flex;gap:10px;flex-direction:column;margin:0 auto">
+                                {% csrf_token %}
+                                {{ secondForm }}  
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                            </div>  
+                        </div>
+                    </div>
+                </div> {% endcomment %}
+
+                <div style="width: 100%;" class="modal fade" id="addSystemModalPc" tabindex="-1" role="dialog" aria-labelledby="addSystemModalPcLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="color:black;height:500px">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="teamMembersModalLabel">Select Team Members</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="color:black;display:flex;gap:15px;margin-left:0">
+                                <form method="POST" action="{% url 'manager:addSystem' %}"  style="display:flex;gap:5px;flex-direction:column;margin:auto 0;width:100%;">
+                                    {% csrf_token %}
+                                    {{ forthform.as_p }}  
+                                    <button type="submit" name="PC_button" class="btn btn-primary" style="margin:auto">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+                <div style="width: 100%;" class="modal fade" id="addSystemModalPs" tabindex="-1" role="dialog" aria-labelledby="addSystemModalPcLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="color:black;height:500px">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="teamMembersModalLabel">Select Team Members</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="color:black;display:flex;gap:15px;margin-left:0">
+                                <form method="POST" action="{% url 'manager:addSystem' %}"  style="display:flex;gap:5px;flex-direction:column;margin:auto 0;width:100%;">
+                                    {% csrf_token %}
+                                    {{ forthform.as_p }}  
+                                    <button type="submit" name="PS_button" class="btn btn-primary" style="margin:auto">Save changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+            <div class="fullbox float">
+                <div style="display: flex;gap:14px;margin-left:0;border-radius:10px;position: relative;width: 50%;flex-wrap:wrap;box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px 18px inset;margin:auto;padding:15px">
+                    <span style="margin-top:4px">PC :</span>
+                    <script>
+                        var tp="{{ context.totalPc }}"
+                        var ap="{{ context.availablePc }}"
+                        var tps="{{ context.totalPs }}"
+                        var aps="{{ context.availablePs }}"
+                        let counterFlag=1;
+                        for (let i = 1; i <= tp; i++) {
+                            
+                                if(counterFlag<=ap){
+                                    counterFlag++;
+                                    document.write(`
+                                        <div style="width:15px;height:15px;border-radius:100%;padding:1px;margin-top:1%" class="available">
+                                        </div>
+                                    `);
+                                }
+                                else{
+                                    document.write(`
+                                        <div style="width:15px;height:15px;border-radius:100%;padding:1px" class="active">
+                                        </div>
+                                    `);
+                                }
+                            
+                        }
+                        document.write(`
+                                        <div data-toggle="modal" data-target="#addSystemModalPc" style="width:35px;height:35px;border-radius:5%;padding:4px">
+                                            <button type="submit" name="PC_button" class="add" href="{% url 'manager:addSystem' %}">+</button>
+                                        </div>
+                                    `);
+                    </script>
+                    <div style="position: absolute;right: 50px;top:20px">{{ context.availablePc }} / {{ context.totalPc }}</div>
+                </div>
+                <div style="display: flex;gap:14px;margin-left:0;position: relative;;border-radius:10px;width: 50%;box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px 18px inset;margin:auto;padding:15px">                
+                    <span style="margin-top:4px">PS :</span>
+                    <script>
+                        counterFlag=1;
+                        for (let i = 1; i <= tps; i++) {
+                            if(counterFlag<=aps){
+                                counterFlag++;
+                                document.write(`
+                                    <div style="width:15px;margin-top:1%;height:15px;border-radius:10%;padding:1px" class="available">
+                                        
+                                    </div>
+                                `);
+                            }
+                            else{
+                                document.write(`
+                                    <div style="width:55px;height:35px;border-radius:100%;padding:5px" class="active">
+                                        
+                                    </div>
+                                `);
+                                
+                            }
+                        }
+                        document.write(`
+                        <div data-toggle="modal" data-target="#addSystemModalPs" style="width:35px;height:35px;border-radius:5%;padding:4px">
+                            <button type="submit" class="available add" href="{% url 'manager:addSystem' %}" name="pc_button">+</button>
+                        </div>
+                    `);
+                    </script>
+                    <div style="position: absolute;right: 50px;top:20px">{{ context.availablePs }} / {{ context.totalPs }}</div>
+                </div>
+                <div style="position: relative; padding: 5px">
+                    <button type="button" style="color:white" class="btn btn-primary" data-toggle="modal" data-target="#UsersModal">Add User</button>  
+                </div>
+            </div>  
+            <div class="box">
+                <h1>Player Stats</h1>
+                <p>Track player performance and game statistics.</p>
+                <form method="GET">
+                    {% comment %} {% csrf_token %} {% endcomment %}
+                    {{ thirdForm }}
+                    <button type="submit">find</button>
+                </form>
+                <ul class="team-list-stats box">
+                    {% for t in play_sessions.all %}   
+                    <li class="team-item">
+                        <div class="team">
+                          <span class="team-id">{{ t.user.uuid }}</span>
+                          {% comment %} <span class="team-id">{{ t.user.name }}</span> {% endcomment %}
+                          <span class="team-name"> {{ t.sessionType }}</span>
+                          <span class="team-position"> {{ t.sesionDuration }} Min</span>
+                          <span class="team-position"> {{ t.sessionAmount }} Tuman</span>
+                        </div>
+                      </li>
+                      
+                       {% comment %} <li>   
+                            <div class="team text-gradient"> 
+                                    {{ t }}
+                                    {{ t.sessionType }}
+                                    {{ t.sesionDuration }}
+                                     {{ session.user.getNameOnly }}({{ session.user.id }})
+                                    {{ session.sessionType }}
+                                    {{ session.sesionDuration }}                     {% endcomment %}
+                                    {% comment %} <div class="information-container"> {% endcomment %}
+                                        {% comment %} <div class="btn-container">
+                                            <button class="btn checkout" onclick="endTimer({{ teamItterate }})">Checkout</button>
+                                            <button class="btn pay" onclick="pay({{ teamItterate }})"><a style="color:black;text-decoration: none;" href="{% url 'manager:payTeam' teamItterate.id%}">PAY</a></button> 
+                                        </div> 
+                            </div>
+                        </li>{% endcomment %}
+                    {% endfor %}
+                    {% comment %} {% endfor %} {% endcomment %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+
+        function openIDForm() {
+            let formHtml = `<div id="idForm">`;
+            formHtml += `<form method="post" action="/addTeam">
+                {% csrf_token %}
+                {{form}}
+                        <button type="submit">Save</button>
+                        <br/>
+                    </form>`;
+                    formHtml += `<br><button class="confirm-btn" onclick="">Confirm</button>
+                    <button class="cancel-btn" onclick="closeForm()">Cancel</button></div>`;
+            let formContainer = document.createElement("div");
+            formContainer.innerHTML = formHtml;
+            document.body.appendChild(formContainer);
+        }
+
+        function submitIDs(count) {
+            let ids = [];
+            for (let i = 1; i <= count; i++) {
+                let idValue = document.getElementById(`id_${i}`).value;
+                if (idValue) ids.push(idValue);
+            }
+            console.log("IDs submitted:", ids);
+            closeForm();
+        }
+
+        function closeForm() {
+            let form = document.getElementById("idForm");
+            if (form) form.parentNode.removeChild(form);
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('#id_uuid').select2({
+                placeholder: "Select User",
+                allowClear: true,
+                width:'200px'
+            });
+        });
+        $(document).ready(function() {
+            // Initialize Select2 on the multiple select element
+            $('.select2-multi').select2({
+                placeholder: "Select Team Members",
+                allowClear: true
+            });
+        });
+        function endTimer(teamId){
+            fetch(`/endTimer/${teamId}`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let test=document.getElementById(`end ${teamId}`);
+                    let date = new Date();
+                    let end_time=`${date.getHours()} : ${date.getMinutes()}`
+                    if(end_time.length==6){
+                        if(date.getHours().toString().length==1){
+                            end_time=`0${date.getHours()} : ${date.getMinutes()}`
+                        }
+                        else if(date.getMinutes().toString().length==1){
+                            end_time=`${date.getHours()} : 0${date.getMinutes()}`
+                        }
+                    }
+                    if(end_time.length==5){
+                        end_time=`0${date.getHours()} : 0${date.getMinutes()}`
+                    }
+                    checkoutTeam(teamId)
+                } else {
+                    alert('Failed to start timer.');
+                }
+            });
+        }
+        function checkoutTeam(teamId) {
+            fetch(`/checkoutTeam/${teamId}`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let checkoutElement=document.getElementById(`checkout ${teamId}`);
+                    let durationElement=document.getElementById(`duration ${teamId}`);
+                    checkoutElement.innerHTML=data.checkout;
+                    if(data.duration<=9 && data.duration>=0){
+                        durationElement.innerHTML=`0${data.duration}`;
+                    }
+                    else{
+                        durationElement.innerHTML=`${data.duration}`;
+
+                    }
+                } else {
+                    alert('Failed to end timer.');
+                }
+            });
+        }
+    </script>   
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
+</body>
+
+</html>
